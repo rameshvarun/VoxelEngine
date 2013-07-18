@@ -1,0 +1,21 @@
+texture framebuffer
+
+effect
+{
+	float offset = 0.008;
+	float bloomscale = 0.3;
+
+	vec2 offx = vec2(offset, 0.0);
+	vec2 offy = vec2(0.0, offset);
+
+	vec4 c0 = framebuffer(_in);
+	vec4 c1 = framebuffer(_in - offy);
+	vec4 c2 = framebuffer(_in + offy);
+	vec4 c3 = framebuffer(_in - offx);
+	vec4 c4 = framebuffer(_in + offx);
+
+	vec4 blur = c0 * 0.2 + c1 * 0.2 + c2 * 0.2 + c3 * 0.2 + c4 * 0.2;
+	float gray = (blur.r * 0.39 + blur.g * 0.50 + blur.b * 0.11)*bloomscale;
+	
+	_out = vec4(c0.r + gray,c0.g + gray,c0.b + gray,c0.a);
+}
